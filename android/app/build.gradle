@@ -38,7 +38,7 @@ android {
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     def date = new Date();
-                    def formattedDate = date.format('-MMM-dd_HH:mm a')
+                    def formattedDate = date.format('-MMM-dd--HH-mm')
                     output.outputFileName = "Open UI" + formattedDate + ".apk"
                 }
             }
