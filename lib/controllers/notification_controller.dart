@@ -21,8 +21,11 @@ class NotificationController {
 
   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
   static const AndroidInitializationSettings _initializationSettingsAndroid = AndroidInitializationSettings('mipmap/ic_launcher');
-  static final DarwinInitializationSettings _initializationSettingsDarwin = DarwinInitializationSettings(onDidReceiveLocalNotification: (id, title, body, payload) {},);
-  final InitializationSettings initializationSettings = InitializationSettings(
+  static const DarwinInitializationSettings _initializationSettingsDarwin = DarwinInitializationSettings(
+
+    // onDidReceiveLocalNotification: (id, title, body, payload) {},
+  );
+  final InitializationSettings initializationSettings = const InitializationSettings(
     android: _initializationSettingsAndroid,
     iOS: _initializationSettingsDarwin,);
 

@@ -32,7 +32,7 @@ class Network {
     try {
       Response res = await dio.get(endPoint,
           queryParameters: queryParams,
-        options: Options(
+          options: Options(
           headers: headers,
         )
       );
