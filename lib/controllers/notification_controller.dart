@@ -5,10 +5,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../utils/storage.dart';
+import '../core/services/service_locator.dart';
+import '../core/services/storage_service.dart';
 
 
 class NotificationController {
+  final StorageService _prefsService = locator<StorageService>();
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -54,7 +56,7 @@ class NotificationController {
     // use the returned token to send messages to users from your custom server
     String? token = await messaging.getToken();
     if(token?.isNotEmpty ?? false) {
-      Prefs().setApiToken(token!);
+      _prefsService.setFCMToken(token!);
     }
     debugPrint("FCM TOKEN:: $token");
 

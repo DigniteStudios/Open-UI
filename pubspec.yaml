@@ -53,6 +53,18 @@ dependencies:
   sign_in_with_apple: ^6.1.1
   flutter_facebook_auth: ^7.0.1
 
+  # For Navigation
+  go_router: ^14.8.0
+
+  # For Dependency Injection
+  get_it: ^8.0.3
+
+  # For State Management
+  flutter_riverpod: ^2.6.1
+
+  # For Helping in Functional Programming
+  dartz: ^0.10.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
