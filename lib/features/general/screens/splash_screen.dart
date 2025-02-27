@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/navigation/route_names.dart';
+import '../../../core/navigation/route_enums.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Durations.extralong1, () => context.goNamed(Routes.login),);
+    Future.delayed(Durations.extralong1, () => context.goNamed(Routes.login.name),);
   }
 
 

@@ -8,9 +8,10 @@ import '../../../../core/params/auth_params.dart';
 import '../../../../core/services/api_service.dart';
 import '../../../../core/services/service_locator.dart';
 import '../models/login_model.dart';
+import '../models/signup_model.dart';
 
 abstract class AuthDatasource {
-  // Future<Either<Failure, RegisterResponse>> register(RegisterParams params);
+  Future<Either<Failure, Signup>> register(SignupParams params);
 
   Future<Either<Failure, Login>> login(LoginParams params);
 
@@ -33,7 +34,19 @@ class AuthDatasourceImpl implements AuthDatasource {
       return Right(loginData);
     }
     on ServerException catch(error){
-      return Future.error(error.message ?? "Error!");
+      return Left(ServerFailure(errorMessage: error.message ?? "Error!",));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Signup>> register(SignupParams params) async {
+    try{
+      Response res = await apiService.post(ApiEndpoints.register, data: params.toJson());
+      Signup signupData = Signup.fromJson(res.data);
+      return Right(signupData);
+    }
+    on ServerException catch(error){
+      return Left(ServerFailure(errorMessage: error.message ?? "Error!",));
     }
   }
 

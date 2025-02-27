@@ -2,10 +2,11 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/auth_feature/data/data_sources/auth_data_sources.dart';
-import '../../features/auth_feature/data/repositories/auth_repository_impl.dart';
-import '../../features/auth_feature/domain/repositories/login_repository.dart';
-import '../../features/auth_feature/domain/use_cases/login_use_case.dart';
+import '../../features/auth/data/data_sources/auth_data_sources.dart';
+import '../../features/auth/data/repositories/auth_repository_impl.dart';
+import '../../features/auth/domain/repositories/login_repository.dart';
+import '../../features/auth/domain/repositories/signup_repository.dart';
+import '../../features/auth/domain/use_cases/login_use_case.dart';
 import 'api_service.dart';
 import 'storage_service.dart';
 
@@ -34,8 +35,17 @@ void setupLocator() async {
 
 /// Register repositories
 void _repositories() {
+  // Register AuthRepositoryImpl as an internal implementation
+  locator.registerLazySingleton<AuthRepositoryInternal>(
+        () => AuthRepositoryImpl(locator<AuthDatasource>()),
+  );
+
+  // Register interfaces using the same instance
   locator.registerLazySingleton<LoginRepository>(
-        () => AuthRepositoryImpl(locator<AuthDatasource>())
+        () => locator<AuthRepositoryInternal>(),
+  );
+  locator.registerLazySingleton<SignupRepository>(
+        () => locator<AuthRepositoryInternal>(),
   );
 }
 
@@ -46,6 +56,7 @@ void _dataSources() {
   );
 }
 
+/// Register use cases
 void _useCase() {
   /// Auth
   locator.registerLazySingleton(() => LoginUseCase(locator<LoginRepository>()));

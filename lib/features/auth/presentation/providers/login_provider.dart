@@ -22,9 +22,9 @@ class LoginProvider extends ChangeNotifier {
     required String password
   }) async {
     final params = LoginParams(email: email, password: password);
-    Either<Failure, LoginEntity> _Login = await locator<LoginUseCase>().call(params);
+    Either<Failure, LoginEntity> _login = await locator<LoginUseCase>().call(params);
 
-    _Login.fold(
+    _login.fold(
           (newFailure) {
             debugPrint("Failure::::::::");
           },

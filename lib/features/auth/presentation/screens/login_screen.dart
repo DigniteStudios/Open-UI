@@ -1,39 +1,39 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:phone_input/phone_input_package.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/extensions/text_theme_extension.dart';
-import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/input_fields.dart';
-import '../../../../shared/widgets/phone_input.dart';
 import '../../../../shared/widgets/touchable.dart';
+import '../providers/login_provider.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  // Input fields controllers
-  final TextEditingController name = TextEditingController();
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
-  final TextEditingController phone = TextEditingController();
-  late PhoneController phoneController;
-
-  // Fields nodes
-  final nameFocus = FocusNode();
-  final emailFocus = FocusNode();
-  final passFocus = FocusNode();
-  final phoneFocus = FocusNode();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  void handleForgot() {
+
+  }
+
   Future<void> handleSubmit() async {
     if(formKey.currentState!.validate()) {
-
+      ref.read(loginProvider.notifier)
+          .handleLogin(
+          email: email.text,
+          password: password.text
+      );
     }
   }
 
@@ -41,7 +41,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    phoneController = PhoneController(PhoneNumber(isoCode: IsoCode.US, nsn: phone.text));
+    if(kDebugMode) {
+      email.text = "eve.holt@reqres.in";
+      password.text = "cityslicka";
+    }
   }
 
   @override
@@ -55,13 +58,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text("Sign Up",
+              Text("Log In",
                 style: context.displaySmall?.copyWith(
-                    fontWeight: FontWeight.w600
+                  fontWeight: FontWeight.w600
                 ),
               ),
               const SizedBox.square(dimension: 10,),
-              Text("Enter the below details to sign up",
+              Text("Enter the below details to login",
                 style: context.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.secondary
                 ),
@@ -70,46 +73,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox.square(dimension: 30,),
 
               InputField(
-                controller: name,
-                hintText: "Name",
-                focusNode: nameFocus,
-                nextFocus: emailFocus,
-                validator: Validators.validateName,
-              ),
-
-              const SizedBox.square(dimension: 20,),
-
-              InputField(
                 controller: email,
-                hintText: "Email",
-                focusNode: emailFocus,
-                nextFocus: phoneFocus,
-                validator: Validators.validateEmail,
-              ),
-
-              const SizedBox.square(dimension: 20,),
-
-              PhoneInputField(
-                controller: phoneController,
-                currentFocus: phoneFocus,
-                nextFocus: passFocus,
+                hintText: "Email Address",
               ),
 
               const SizedBox.square(dimension: 20,),
 
               InputField(
                 controller: password,
-                focusNode: passFocus,
                 hintText: "Password",
-                validator: Validators.passFieldValidator,
+                obscureText: true,
               ),
 
+              const SizedBox.square(dimension: 2,),
 
-              const SizedBox.square(dimension: 30,),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                    onPressed: handleForgot,
+                    child: const Text("Forgot Password?")
+                ),
+              ),
+
+              const SizedBox.square(dimension: 10,),
 
               PushButton(
                 onPressed: handleSubmit,
-                label: "Submit",
+                label: "Log In",
               ),
 
               const SizedBox.square(dimension: 10,),
@@ -118,10 +108,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textAlign: TextAlign.center,
                   TextSpan(children: [
                     TextSpan(
-                        text: "Already have an account? ",
+                        text: "Don’t have an account? ",
                         style: context.bodySmall),
                     TextSpan(
-                        text: "Log In",
+                        text: "Sign Up",
                         recognizer: TapGestureRecognizer()
                           ..onTap = () => null,
                         style: context.titleSmall
@@ -130,6 +120,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
               const SizedBox.square(dimension: 40,),
 
+              Row(
+                mainAxisAlignment:
+                MainAxisAlignment.spaceEvenly,
+                children: [
+                  // if (Platform.isIOS)
+                    SocialButton(
+                      onTap: () => null,
+                      type: SocialButtonType.apple,
+                    ),
+                  SocialButton(
+                    onTap: () => null,
+                    type: SocialButtonType.google,
+                  ),
+                ],
+              ),
             ],
           ),
         ),

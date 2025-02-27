@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import 'core/navigation/app_router.dart';
 import 'core/services/service_locator.dart';
@@ -13,14 +12,12 @@ void main() async {
   //   // options: DefaultFirebaseOptions.currentPlatform,
   // );
   setupLocator();
-  final appRouter = AppRouter();
-  runApp(ProviderScope(child: MyApp(router: appRouter.router)));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 
 class MyApp extends StatelessWidget {
-  final GoRouter router;
-  const MyApp({super.key, required this.router});
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -31,7 +28,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: lightTheme,
       darkTheme: darkTheme,
-      routerConfig: router,
+      routerConfig: AppRouter.router,
     );
   }
 }

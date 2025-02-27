@@ -1,39 +1,44 @@
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:phone_input/phone_input_package.dart';
 
-import '../../../../controllers/login_controller.dart';
 import '../../../../core/extensions/text_theme_extension.dart';
+import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/input_fields.dart';
+import '../../../../shared/widgets/phone_input.dart';
 import '../../../../shared/widgets/touchable.dart';
-import '../providers/login_provider.dart';
+import '../providers/signup_provider.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final LoginController controller = LoginController();
-
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  // Input fields controllers
+  final TextEditingController name = TextEditingController();
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
+  final TextEditingController phone = TextEditingController();
+  late PhoneController phoneController;
+
+  // Fields nodes
+  final nameFocus = FocusNode();
+  final emailFocus = FocusNode();
+  final passFocus = FocusNode();
+  final phoneFocus = FocusNode();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  void handleForgot() {
-
-  }
-
   Future<void> handleSubmit() async {
     if(formKey.currentState!.validate()) {
-      ref.read(loginProvider.notifier)
-          .handleLogin(
+      ref.read(signupProvider.notifier)
+          .handleSignup(
           email: email.text,
           password: password.text
       );
@@ -44,10 +49,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(kDebugMode) {
-      email.text = "eve.holt@reqres.in";
-      password.text = "cityslicka";
-    }
+    phoneController = PhoneController(PhoneNumber(isoCode: IsoCode.US, nsn: phone.text));
   }
 
   @override
@@ -61,13 +63,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text("Log In",
+              Text("Sign Up",
                 style: context.displaySmall?.copyWith(
-                  fontWeight: FontWeight.w600
+                    fontWeight: FontWeight.w600
                 ),
               ),
               const SizedBox.square(dimension: 10,),
-              Text("Enter the below details to login",
+              Text("Enter the below details to sign up",
                 style: context.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.secondary
                 ),
@@ -76,33 +78,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox.square(dimension: 30,),
 
               InputField(
+                controller: name,
+                hintText: "Name",
+                focusNode: nameFocus,
+                nextFocus: emailFocus,
+                validator: Validators.validateName,
+              ),
+
+              const SizedBox.square(dimension: 20,),
+
+              InputField(
                 controller: email,
-                hintText: "Email Address",
+                hintText: "Email",
+                focusNode: emailFocus,
+                nextFocus: phoneFocus,
+                validator: Validators.validateEmail,
+              ),
+
+              const SizedBox.square(dimension: 20,),
+
+              PhoneInputField(
+                controller: phoneController,
+                currentFocus: phoneFocus,
+                nextFocus: passFocus,
               ),
 
               const SizedBox.square(dimension: 20,),
 
               InputField(
                 controller: password,
+                focusNode: passFocus,
                 hintText: "Password",
-                obscureText: true,
+                validator: Validators.passFieldValidator,
               ),
 
-              const SizedBox.square(dimension: 2,),
 
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                    onPressed: handleForgot,
-                    child: const Text("Forgot Password?")
-                ),
-              ),
-
-              const SizedBox.square(dimension: 10,),
+              const SizedBox.square(dimension: 30,),
 
               PushButton(
                 onPressed: handleSubmit,
-                label: "Log In",
+                label: "Submit",
               ),
 
               const SizedBox.square(dimension: 10,),
@@ -111,37 +126,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   textAlign: TextAlign.center,
                   TextSpan(children: [
                     TextSpan(
-                        text: "Don’t have an account? ",
+                        text: "Already have an account? ",
                         style: context.bodySmall),
                     TextSpan(
-                        text: "Sign Up",
+                        text: "Log In",
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => null,
+                          ..onTap = context.pop,
                         style: context.titleSmall
                     ),
                   ])),
 
               const SizedBox.square(dimension: 40,),
 
-              Row(
-                mainAxisAlignment:
-                MainAxisAlignment.spaceEvenly,
-                children: [
-                  // if (Platform.isIOS)
-                    SocialButton(
-                      onTap: controller.appleSignIn,
-                      type: SocialButtonType.apple,
-                    ),
-                  SocialButton(
-                    onTap: controller.googleSignIn,
-                    type: SocialButtonType.google,
-                  ),
-                  SocialButton(
-                    onTap: controller.facebookSignIn,
-                    type: SocialButtonType.facebook,
-                  ),
-                ],
-              ),
             ],
           ),
         ),

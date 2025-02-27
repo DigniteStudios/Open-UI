@@ -1,60 +1,57 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_ui/view/screens/forgot_pass_screen.dart';
 
-import '../../view/screens/change_pass_screen.dart';
-import '../../features/chat_feature/presentation/chat_screen.dart';
-import '../../features/auth_feature/presentation/screens/login_screen.dart';
-import '../../view/screens/otp_screen.dart';
-import '../../features/auth_feature/presentation/screens/signup_screen.dart';
-import '../../view/screens/splash_screen.dart';
-import '../../view/screens/user_profile_screen.dart';
-import 'route_names.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/signup_screen.dart';
+import '../../features/chat/presentation/chat_screen.dart';
+import '../../features/general/screens/splash_screen.dart';
+import 'route_enums.dart';
 
-final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
-  final GoRouter router = GoRouter(
-    navigatorKey: _navigatorKey,
-    initialLocation: Routes.home,
+  static final GoRouter router = GoRouter(
+    initialLocation: Routes.root.path,
+    routerNeglect: true,
+    debugLogDiagnostics: kDebugMode,
     routes: [
       GoRoute(
-        path: Routes.home,
+        name: Routes.root.name,
+        path: Routes.root.path,
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
-        name: Routes.login,
-        path: "/${Routes.login}",
+        name: Routes.login.name,
+        path: Routes.login.path,
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
-        name: Routes.register,
-        path: "/${Routes.register}",
+        name: Routes.register.name,
+        path: Routes.register.path,
         builder: (context, state) => const SignUpScreen(),
       ),
+      // GoRoute(
+      //   name: Routes.otp.name,
+      //   path: Routes.otp.path,
+      //   builder: (context, state) => const OTPScreen(),
+      // ),
+      // GoRoute(
+      //   name: Routes.forgotPass.name,
+      //   path: Routes.forgotPass.path,
+      //   builder: (context, state) => const ForgotPassScreen(),
+      // ),
+      // GoRoute(
+      //   name: Routes.changePass.name,
+      //   path: Routes.changePass.path,
+      //   builder: (context, state) => const ChangePassScreen(),
+      // ),
+      // GoRoute(
+      //   name: Routes.profile.name,
+      //   path: Routes.profile.path,
+      //   builder: (context, state) => const UserProfileScreen(),
+      // ),
       GoRoute(
-        name: Routes.otp,
-        path: "/${Routes.otp}",
-        builder: (context, state) => const OTPScreen(),
-      ),
-      GoRoute(
-        name: Routes.forgotPass,
-        path: "/${Routes.forgotPass}",
-        builder: (context, state) => const ForgotPassScreen(),
-      ),
-      GoRoute(
-        name: Routes.changePass,
-        path: "/${Routes.changePass}",
-        builder: (context, state) => const ChangePassScreen(),
-      ),
-      GoRoute(
-        name: Routes.profile,
-        path: "/${Routes.profile}",
-        builder: (context, state) => const UserProfileScreen(),
-      ),
-      GoRoute(
-        name: Routes.chat,
-        path: "/${Routes.chat}",
+        name: Routes.chat.name,
+        path: Routes.chat.path,
         builder: (context, state) => const ChatScreen(),
       ),
     ],
