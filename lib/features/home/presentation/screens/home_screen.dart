@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:open_ui/core/extensions/text_theme_extension.dart';
 
 import '../../domain/entities/product_entity.dart';
@@ -15,9 +17,15 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.read(productProvider.notifier).getProducts();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<ProductEntity> products = ref.watch(productProvider).products;
-
     return Scaffold(
       appBar: AppBar(
         title: Text("ISSACS".toUpperCase()),
@@ -32,15 +40,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         child: RefreshIndicator(
           onRefresh: ref.read(productProvider.notifier).getProducts,
-          child: GridView.builder(
+          child: MasonryGridView.builder(
             padding: const EdgeInsets.all(15).copyWith(
               top: 30
             ),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15
-              ),
+            gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2
+            ),
+            mainAxisSpacing: 15,
+            crossAxisSpacing: 15,
             itemCount: products.length,
             itemBuilder: (context, index) {
               ProductEntity product = products[index];
@@ -48,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
-                    boxShadow: [BoxShadow(
+                    boxShadow: const [BoxShadow(
                         color: Colors.black12,
                         spreadRadius: 5.0,
                         blurRadius: 10.0,
@@ -60,9 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: Image.network(product.image),
-                      ),
+                      Image.network(product.image),
                       const SizedBox.square(dimension: 15,),
                       Text(product.title,
                         textAlign: TextAlign.center,
