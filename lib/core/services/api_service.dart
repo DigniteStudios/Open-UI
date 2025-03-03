@@ -1,5 +1,6 @@
 // lib/core/services/api_service.dart
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 
 import '../constants/api_endpoints.dart';
 import '../errors/exceptions.dart';
@@ -21,6 +22,9 @@ class ApiService {
     _dio.interceptors.add(LogInterceptor(
         responseBody: true,
       requestHeader: false,
+      requestBody: true,
+      responseHeader: false,
+      request: true
     ));
   }
 
@@ -38,7 +42,12 @@ class ApiService {
       return await _dio.post(endpoint, data: data);
     } on DioException catch (e) {
       // Handle errors
-      throw ServerException('POST request error: ${e.message}');
+      if(e.response?.data is String) {
+        throw ServerException(e.response?.data);
+      }
+      else {
+        throw ServerException('POST request error: ${e.message}');
+      }
     }
   }
 

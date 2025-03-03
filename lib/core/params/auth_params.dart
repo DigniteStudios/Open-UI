@@ -9,7 +9,7 @@ class LoginParams {
 
   Map<String, String> toJson() {
     return {
-      'email': email,
+      'username': email,
       'password': password
     };
   }

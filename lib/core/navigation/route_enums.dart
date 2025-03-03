@@ -13,6 +13,8 @@ enum Routes {
  // User routes
   profile('/user/profile'),
 
+  home('/home'),
+
   chat('/chat'),
   ;
 

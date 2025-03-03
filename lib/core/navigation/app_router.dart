@@ -5,6 +5,7 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/chat/presentation/chat_screen.dart';
 import '../../features/general/screens/splash_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
 import 'route_enums.dart';
 
 
@@ -28,6 +29,12 @@ class AppRouter {
         name: Routes.register.name,
         path: Routes.register.path,
         builder: (context, state) => const SignUpScreen(),
+      ),
+
+      GoRoute(
+        name: Routes.home.name,
+        path: Routes.home.path,
+        builder: (context, state) => const HomeScreen(),
       ),
       // GoRoute(
       //   name: Routes.otp.name,

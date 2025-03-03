@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/extensions/text_theme_extension.dart';
+import '../../../../core/navigation/route_enums.dart';
 import '../../../../shared/widgets/input_fields.dart';
 import '../../../../shared/widgets/touchable.dart';
 import '../providers/login_provider.dart';
@@ -37,18 +39,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  void listenChanges() {
+    ref.listen(loginProvider,(previous, next) {
+      if(next.failure != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(next.failure!.errorMessage)
+            )
+        );
+      }
+      else if(next.token != null) {
+        context.goNamed(Routes.home.name);
+      }
+    },);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     if(kDebugMode) {
-      email.text = "eve.holt@reqres.in";
-      password.text = "cityslicka";
+      email.text = "johnd";
+      password.text = r"m38rmF$";
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    listenChanges();
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -97,10 +116,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               const SizedBox.square(dimension: 10,),
 
-              PushButton(
-                onPressed: handleSubmit,
-                label: "Log In",
+              Consumer(
+                builder: (context, ref, child) {
+                  bool loading = ref.watch(loginProvider).loading;
+                  return PushButton(
+                    onPressed: handleSubmit,
+                    loading: loading,
+                    label: "Log In",
+                  );
+                },
               ),
+
 
               const SizedBox.square(dimension: 10,),
 

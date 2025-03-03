@@ -7,6 +7,10 @@ import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/login_repository.dart';
 import '../../features/auth/domain/repositories/signup_repository.dart';
 import '../../features/auth/domain/use_cases/login_use_case.dart';
+import '../../features/home/data/data_sources/product_datasource.dart';
+import '../../features/home/data/repositories/product_repository_impl.dart';
+import '../../features/home/domain/repositories/products_repository.dart';
+import '../../features/home/domain/use_cases/product_use_case.dart';
 import 'api_service.dart';
 import 'storage_service.dart';
 
@@ -40,12 +44,21 @@ void _repositories() {
         () => AuthRepositoryImpl(locator<AuthDatasource>()),
   );
 
+  // Register ProductRepositoryImpl as an internal implementation
+  locator.registerLazySingleton<ProductRepositoryInternal>(
+        () => ProductRepositoryImpl(locator<ProductDatasource>()),
+  );
+
   // Register interfaces using the same instance
   locator.registerLazySingleton<LoginRepository>(
         () => locator<AuthRepositoryInternal>(),
   );
   locator.registerLazySingleton<SignupRepository>(
         () => locator<AuthRepositoryInternal>(),
+  );
+
+  locator.registerLazySingleton<ProductRepository>(
+        () => locator<ProductRepositoryInternal>(),
   );
 }
 
@@ -54,10 +67,17 @@ void _dataSources() {
   locator.registerLazySingleton<AuthDatasource>(
         () => AuthDatasourceImpl(),
   );
+
+  locator.registerLazySingleton<ProductDatasource>(
+        () => ProductDatasourceImpl(),
+  );
 }
 
 /// Register use cases
 void _useCase() {
   /// Auth
   locator.registerLazySingleton(() => LoginUseCase(locator<LoginRepository>()));
+
+  /// Products
+  locator.registerLazySingleton(() => ProductsUseCase(locator<ProductRepository>()));
 }

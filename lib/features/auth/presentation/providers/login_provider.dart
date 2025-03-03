@@ -13,7 +13,9 @@ final loginProvider = ChangeNotifierProvider<LoginProvider>((ref) {
 });
 
 class LoginProvider extends ChangeNotifier {
-  String? token;
+  LoginEntity? token;
+  Failure? failure;
+  bool loading = false;
   LoginProvider();
 
 
@@ -21,15 +23,24 @@ class LoginProvider extends ChangeNotifier {
     required String email,
     required String password
   }) async {
+    loading = true;
+    failure = null;
+    notifyListeners();
     final params = LoginParams(email: email, password: password);
     Either<Failure, LoginEntity> _login = await locator<LoginUseCase>().call(params);
 
     _login.fold(
           (newFailure) {
-            debugPrint("Failure::::::::");
+            token = null;
+            loading = false;
+            failure = newFailure;
+            notifyListeners();
           },
           (newResult) {
-            debugPrint("Result::::::::");
+            token = newResult;
+            failure = null;
+            loading = false;
+            notifyListeners();
           },
     );
 

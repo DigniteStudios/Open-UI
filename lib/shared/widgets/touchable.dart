@@ -6,9 +6,15 @@ enum SocialButtonType {google, apple, facebook}
 
 class PushButton extends StatelessWidget {
   final String label;
+  final bool loading;
   final VoidCallback onPressed;
   final EdgeInsets? padding;
-  const PushButton({super.key, required this.label, required this.onPressed, this.padding});
+  const PushButton({super.key,
+    required this.label,
+    required this.onPressed,
+    this.padding,
+    this.loading = false
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +27,17 @@ class PushButton extends StatelessWidget {
           ),
           padding: padding ?? const EdgeInsets.all(18)
       ),
-      onPressed: onPressed,
-      child: Text(label),
+      onPressed: loading ? null : onPressed,
+      child: loading
+          ? const SizedBox.square(
+        dimension: 20,
+        child: CircularProgressIndicator(
+          strokeCap: StrokeCap.round,
+          color: Colors.white,
+          strokeWidth: 5,
+        ),
+      )
+          : Text(label),
     );
   }
 }
